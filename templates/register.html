@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}New Stock{% endblock %}
+{% block navheader%}
+<h2>New Stock&nbsp;&nbsp;</h2>
+{% endblock %}
+
+{% block nav %}
+<div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-user"></i>
+          </a>
+          <ul class="dropdown-menu">
+             <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="#">Upload</a></li>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item" aria-current="page" data-bs-toggle="modal"
+               data-bs-target="#exampleModal-logout">Logout</a>
+          </ul>
+        </li>
+      </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+<script language="JavaScript">
+    function showInput() {
+        //document.getElementById('quantity').innerHTML =
+                    document.getElementById("user-input1").value;
+        //document.getElementById('unit').innerHTML =
+                    document.getElementById("user-input2").value;
+        var item=document.getElementById("user-input").value;
+        var a=document.getElementById("user-input1").value;
+        var b=document.getElementById("user-input2").value;
+        var c="{{list_inv}}"
+        if (item =="")
+          {
+            document.getElementById("update").disabled = true;
+            document.getElementById("answer").innerHTML="Oops! Please fill in the inventory name";
+          }
+        else if(c.includes(item.toLowerCase()))
+        {
+        document.getElementById("update").disabled = true;
+        document.getElementById("message").style.backgroundColor = "red";
+        document.getElementById("message").style.color = "white";
+            document.getElementById("answer").innerHTML="Oops! Stock name already in the database";
+        }
+        else
+        {
+        if (a>"0" && !(b==""))
+          {
+            document.getElementById("update").disabled = false;
+            document.getElementById("message").style.backgroundColor = "#0d6efd";
+            document.getElementById("message").style.color = "white";
+            document.getElementById("answer").innerHTML= "Are you sure you want to add this item " + document.getElementById("user-input").value + " for " + a + " " + b
+          }
+        else
+          {
+            document.getElementById("update").disabled = true;
+            if ( a < "1" ){
+            document.getElementById("message").style.backgroundColor = "red";
+            document.getElementById("message").style.color = "white";
+                document.getElementById("answer").innerHTML="Oops! Cannot enter quantity below 1!";
+                }
+            else{
+            document.getElementById("message").style.backgroundColor = "red";
+            document.getElementById("message").style.color = "white";
+                document.getElementById("answer").innerHTML="Oops! Please not left empty form";
+                }
+          }
+        }
+        }
+
+</script>
+<h3>New Stock Register</h3>
+<form method="POST" action="/register" name="form">
+    <div class="form-group">
+        <input id="user-input" class="form-control form-control-lg item" type="text" name="inventory"
+               placeholder="Inventory" value="{{item}}" required>
+        <input id="user-input1" class="form-control form-control-lg quantity" type="number" name="quantity"
+               placeholder="Enter Amount" required>
+        <select id="user-input2" class="form-select si-unit" aria-label="Default select example" name="selection"
+                required>
+            <option value="" disabled selected>Select SI Unit</option>
+            <option value="units">units</option>
+            <option value="pcs">pcs</option>
+            <option value="kg">kg</option>
+            <option value="ton">ton</option>
+            <option value="meter">meter</option>
+            <option value="ltr">ltr</option>
+            <option value="drum">drum</option>
+            <option value="pallet">pallet</option>
+            <option value="pail">pail</option>
+            <option value="bottles">bottles</option>
+            <option value="cans">cans</option>
+            <option value="boxes">boxes</option>
+        </select>
+    </div>
+
+    <div id="btn" class="d-grid gap-2 col-6 mx-auto container">
+        <button type="button" class="btn btn-outline-primary btn-lg" data-bs-toggle="modal"
+                data-bs-target="#exampleModal" onclick="showInput()">Register New Item
+        </button>
+        <a href="/" class="btn btn-outline-primary btn-lg icon"><i class="fa-solid fa-house"></i></a>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Save Item</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="message" class="modal-body">
+                    <p id="answer"></p>
+                    <!--message-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                    <button id="update" type="submit" class="btn btn-primary">YES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for logout -->
+    <div class="modal fade" id="exampleModal-logout" tabindex="-1" aria-labelledby="exampleModalLabel-logout"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel-logout">Logout!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-bg-danger">
+                    <p>Are you sure you want to logout?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                    <a href="/logout" type="button" class="btn btn-danger">SURE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

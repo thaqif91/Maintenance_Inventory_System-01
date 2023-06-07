@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% block title %}Update{% endblock %}
+{% block navheader%}
+<h2>Update&nbsp;&nbsp;</h2>
+{% endblock %}
+{% block nav %}
+<div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+        </li>
+          <li class="nav-item">
+            <a href="/update" class="nav-link active" aria-current="page">New Stock</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-user"></i>
+          </a>
+          <ul class="dropdown-menu">
+             <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="#">Upload</a></li>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item" aria-current="page" data-bs-toggle="modal"
+               data-bs-target="#exampleModal-logout">Logout</a>
+          </ul>
+        </li>
+      </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+<script language="JavaScript">
+    function showInput() {
+        document.getElementById('user-input1').required = false;
+        var a=document.getElementById("user-input").value;
+        var b=document.getElementById("user-input2").value;
+        if ({{ item[2] }}<"1") {
+            document.getElementById("delete").disabled = false;
+            document.getElementById("answer").innerHTML="Are you sure you want to delete this item"+ a
+            }
+        else {
+            document.getElementById("delete").disabled = true;
+            document.getElementById("answer").innerHTML="Oops! You can't delete this item "+ a + " because it still has balance "+ {{ item[2] }}+" "+ b;
+            }
+        }
+    function adjustInput(what) {
+        var item=document.getElementById("user-input").value;
+        var a=document.getElementById("user-input1").value;
+        var b=document.getElementById("user-input2").value;
+        var c=document.getElementById("user-input3").value;
+        if (what=='takeout' && a>{{ item[2] }})
+          {
+            document.getElementById("takeout").disabled = true;
+            document.getElementById("answer2").innerHTML="Balance of " + item + " is "+ {{ item[2] }}+" "+ b + " and not enough to take out "
+          }
+        else if (a>"0" && !(b==""))
+          {
+            document.getElementById("add-in").disabled = false;
+            document.getElementById("answer1").innerHTML="Are you sure you want to "+ what +" this item " + item + " for " + a + " " + b
+            if (what=='takeout' && !(c=="")){
+                document.getElementById("takeout").disabled = false;
+                document.getElementById("answer2").innerHTML="Are you sure you want to "+ what +" this item " + item + " for " + a + " " + b + " for machine "+ c
+            }
+            else
+            {
+                document.getElementById("takeout").disabled = true;
+                document.getElementById("answer2").innerHTML="Oops! Please enter a machine";
+            }
+          }
+        else
+          {
+            document.getElementById("add-in").disabled = true;
+            document.getElementById("takeout").disabled = true;
+            if ( a < "1" ){
+                document.getElementById("answer1").innerHTML="Oops! Please enter a quantity more than 0!";
+                document.getElementById("answer2").innerHTML="Oops! Please enter a quantity more than 0";
+                }
+            else{
+                document.getElementById("answer1").innerHTML="Oops! Please not left empty form";
+                document.getElementById("answer2").innerHTML="Oops! Please not left empty form";
+                }
+            }
+        }
+
+
+</script>
+<h3>Update Inventory</h3>
+<form method="POST">
+    <div class="form-group">
+        <input id="user-input" class="form-control form-control-lg item" type="text" name="inventory"
+               placeholder="Inventory" value="{{item[1]}}" required>
+        <input id="user-input1" class="form-control form-control-lg quantity" type="number" name="quantity"
+               placeholder="Enter Amount" required>
+        <select id="user-input2" class="form-select si-unit" aria-label="Default select example" name="selection"
+                required>
+            <option selected>{{item[3]}}</option>
+        </select>
+        <select id="user-input3" class="form-select si-unit" aria-label="Default select example" name="selection1">
+            <option value="" disabled selected>Select Machine</option>
+            <option value="ATT1">Att 1</option>
+            <option value="ATT2">Att 2</option>
+            <option value="MG800">MG800</option>
+            <option value="GE12">GE12</option>
+            <option value="GS">Golden Spot(GS)</option>
+            <option value="Bending">Bending</option>
+            <option value="Cutting">Sheer Cutting</option>
+            <option value="TJK">TJK</option>
+            <option value="TR43">TR43</option>
+            <option value="TR53(A)">TR53(A)</option>
+            <option value="TR53(B)">TR53(B)</option>
+            <option value="Vitari">Vitari</option>
+        </select>
+    </div>
+
+    <div id="btn" class="d-grid gap-2 col-6 mx-auto container">
+        <button type="button" class="btn btn-outline-primary btn-lg" data-bs-toggle="modal"
+                data-bs-target="#exampleModal1" onclick="adjustInput('add')">Add Item
+        </button>
+        <button type="button" class="btn btn-outline-danger btn-lg" data-bs-toggle="modal"
+                data-bs-target="#exampleModal2" onclick="adjustInput('takeout')">Take Out Item
+        </button>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                onclick="showInput()">Delete
+        </button>
+        <a href="/" class="btn btn-outline-primary btn-lg icon"><i class="fa-solid fa-house"></i></a>
+    </div>
+    <!-- Modal for delete -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Item</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-bg-danger p-3">
+                    <p id="answer"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                    <button id="delete" type="submit" class="btn btn-danger" formaction="/delete/{{item[0]}}">YES
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for add-in -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel1">Update Item</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-bg-primary p-3">
+                    <p id="answer1"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                    <button id="add-in" type="submit" class="btn btn-primary" formaction="/add/{{item[0]}}">YES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for takeout -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel2">Update Item</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-bg-danger p-3">
+                    <p id="answer2"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                    <button id="takeout" type="submit" class="btn btn-danger" formaction="/sub/{{item[0]}}">YES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for logout -->
+    <div class="modal fade" id="exampleModal-logout" tabindex="-1" aria-labelledby="exampleModalLabel-logout"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel-logout">Logout!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-bg-danger">
+                    <p>Are you sure you want to logout?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                    <a href="/logout" type="button" class="btn btn-danger">SURE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
